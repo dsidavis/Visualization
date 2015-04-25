@@ -1,7 +1,6 @@
 source("utilFuns.R")
 
 
-if(FALSE) {
  g = getFunctionNetwork("ggvis")
 
  library(graph)
@@ -28,6 +27,8 @@ if(FALSE) {
  notCalled = setdiff(notCalled, c("ggvis", "mark", grep("^(layer_|knit_print)", names(g), value = TRUE)))
  cg = g[ - match(notCalled, names(g))]
  cgr = graphNEL(names(cg), cg, "directed")
+
+
  icgr = igraph.from.graphNEL(cgr)
  pos = plot(icgr, vertex.size = .75, edge.arrow.size = .4, layout = layout.kamada.kawai, vertex.label.dist = .25)
 
@@ -35,5 +36,7 @@ if(FALSE) {
  # Perhaps display the not-called functions on the sides of the plot.
  # can use par()$usr to get coordinates.
 
+ # Exercise: How do we igraph to plot these for us?
+
  # Rgraphviz
-}
+
