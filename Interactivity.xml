@@ -1,0 +1,244 @@
+<article>
+<articleinfo>
+
+<title>High-level Concepts of Interactive and Web Graphics</title>
+
+<author><firstname>Duncan</firstname><surname>Temple Lang</surname>
+  <affiliation><orgname>University of California at Davis</orgname>
+               <orgdiv>Department of Statistics</orgdiv>
+  </affiliation>
+</author>
+</articleinfo>
+
+
+<para>
+Goals of the session are 
+<ol>
+<li> to introduce you to a variety of tools that you can use immediately to create interesting displays, dashboards, etc.</li>
+<li> to explain the architecture involved so that you can go further than simple use of the tools</li>
+</ol>
+</para>
+
+<para>
+These tools provide  "instant" gratification (once you learn the basics).
+However, it is very important that you focus on using the tools to present the data clearly
+and offer insight for the viewer. It is easy to produce bad displays, and to focus on the "glossy", "moving"
+things.
+</para>
+
+<para>
+Interactive displays are very different from static plots.
+When we create a static plot, we make decisions about what is in the plot
+or not, what to emphasize. We are in charge of what the viewer sees.
+For an interactive plot, we still get to make many decisions
+that limit what the viewer can see. However, when the viewer
+sees the display, she can change it via the user controls we provide.
+We are providing the viewer with a process for exploring the information
+in the plot in her own way.
+</para>
+
+<para>
+Interactive plots are verging on software, and many are full-fledged
+pieces of software.  Therefore, we need to incorporate best practices
+and considerations for both user interface (UI) and user experience
+(UX).  We have seen best practices and considerations for static
+plots.  These also (generally) apply to interactive plots, and we also
+have to consider dynamic, interactive best practices.
+</para>
+<para>
+We need to
+<ol>
+<li>consider what the viewer may want to do,</li>
+<li>handle errors</li>
+<li>provide feedback and suggestions</li>
+<li>use clear interfaces with documentation. Often they will not be intuitive to everyone.</li>
+</ol>
+</para>
+
+<para>
+There are many ways to create interactive plots.  It is somewhat of a
+wild-west out there. Things are converging and approaches are being
+integrated.  There are still a lot of tradeoffs.  While many of you
+will want to quickly create standard plots, others will want to create
+non-standard plots and will have to work harder as there may not be
+existing functions to create those plots.  Regardless, it is helpful,
+if not very important, to understand the fundamentals of the
+mechanisms that make all of this possible and to be able to go below
+the high-level interfaces.
+</para>
+
+<aside>
+I'm a big believer in minimizing the discontinuity in programming when dealing with problems.
+In other words, I don't want to have a situation where it is easy
+to do one thing, but a slight variation in that means an entirely different approach and
+having  to learn a new software system or computational model.
+For this reason, I like to know how things work and be able to use the primitives
+when we need to do something slightly outside of the norm.
+</aside>
+
+
+<para>
+There are (at least) three differerent styles of interactive plots:
+ 1) stand-alone displays that contain all the information for their own interactivity  (e.g. tooltips, animation in SVG)
+ 2) displays that have client-side (JavaScript) code which updates the plot at viewing time
+ 3) displays that need computations to be done at viewing time that can't be done in the client's browser, e.g. need to come back to R.
+</para>
+
+<para>
+When we are on our own machine, we don't need to care much about these distinctions.
+When we publish displays for other people to view, we have to consider some issues.
+</para>
+
+<para>
+If we are displaying data that cannot be explicitly shared in totality with viewers (for confidentiality reason or simply size of the
+data), but we can show summary plots, then we have to have any computations that update the display done on a server, not in each client's browser.
+<fix>make this clearer about which computations need to be done on the server</fix>
+</para>
+
+<para>
+The server does not run arbitrary code, but there are security issues that we need to be aware of. 
+Running R on a server requires some care to ensure that people cannot inject code to expose information
+on the server, or delete files, or simply keeps the server busy so that other requests cannot be processed.
+If you build something popular, the demands on the server may be many.
+For personal use, or internally within an institution, this is probably not an issue.
+</para>
+
+<para>
+The more we can do in the client's browser, the lower the latency/delay waiting for results.
+Perhaps, the initial display of the page is delayed however. 
+Ideally, display the initial page rapidly and asynchronously download additional elements
+we need (e.g. data for further plots).
+</para>
+
+<para>
+We're going to look under the hood so that you can learn how
+you can go further than the basics.
+</para>
+
+
+<para>
+Different Architectures for Interactive Plots
+<ol>
+<li>Use an R graphics device with locator() or setGraphicsEventHandlers()</li>
+<li>PNG/JPEG files and image maps (very old)</li>
+<li>Create plots in R to, e.g., SVG, with annotations to provide event handlers, animations.
+  <ol>
+   <li>RSVGTipsDevice</li>
+   <li>svg() graphics device and then post-process the SVG content to add tooltips, animations, event handlers - SVGAnnotation</li>
+   <li>Add SVG content to R objects in grid plot and generate SVG - gridSVG</li>
+  </ol>
+</li>
+
+<li>Within R, create JavaScript, HTML code that will create the plot in the Web browser when loaded</li>
+
+<li>Create HTML document whose sub-contents will be updated at </li>
+</ol>
+</para>
+
+<para>
+Creating object-based pots where the elements in the plot is quite different
+from the R style of graphics.
+We can change the characteristics of an element and it will be immediately updated.
+</para>
+
+<para>
+Object-based displays are problematic as the number of elements grows.
+This is true of vectorized plots also. 
+Instead of having a fixed number of pixels based on the dimensions
+of the raster image, object-based plots have as many elements as
+there are observations (or more).
+</para>
+
+
+
+
+<para>
+If you know R, it may be easier to create HTML, JavaScript code, etc. in R.
+Programmatically generating content is a good idea when it removes repetition
+(e.g. creating checkboxes for 100 senators) or we want to reproduce this in different ways.
+However, it adds an additional layer between the output we create and the input that creates it.
+This can make it difficult to create the final document we actually want.
+Furthermore, it often complicates debugging both the page generation and also 
+the run-time behavior of the page. This is because we have to fully understand
+how and what the layer is generating.
+</para>
+
+<para>
+Client-server code is hard to debug since there are two agents involved.
+We can run the R shiny server interactively  and catch errors.
+</para>
+
+
+
+
+<para>
+<programlisting>
+http://timelyportfolio.github.io/gridSVG_intro/
+
+
+Linked plots
+Brushing
+
+
+animation 
+  Simple sequence of images
+  Object-based animation.
+
+
+
+Basics of Stand-alone
+  tooltips
+  highlight (e.g. a point, a line)
+
+
+Off-The-Shelf Approaches
+
+googleVis
+https://developers.google.com/chart/
+
+
+
+
+Maps
+  chloropleth maps. Good choice of colors vital.
+
+  Google Earth
+    allows the viewer to add/remove other elements/layers, control time window, 
+
+RgoogleMaps
+ggmap
+
+rworldmap, rworldxtra
+
+ par(mar = c(0, 0, 0, 0))
+ plot(getMap("li"))
+
+
+plotKML package
+
+
+Linked maps
+  file:///Users/duncan/Projects/NSFWorkshops/Visualization/maps/DistributionsMap.html
+
+
+
+
+
+HTML, CSS, JavaScript
+ www.w3schools.com
+
+
+
+ExcitedRW:  Click on a boxplot of timings, show code corresponding to that implementation.
+
+
+
+
+
+
+
+D3
+/Users/duncan/Projects/Visualization
+</programlisting>
+</para>
+</article>

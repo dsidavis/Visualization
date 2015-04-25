@@ -33,3 +33,7 @@ p
 # 8 acres.
 # Lucas valley road.
 # Lookup address on zillow. Could do it via the API from our Web Scraping 
+
+
+# How can we then put this on a Web page for others to explore?
+# Compare to gridSVG/SVGAnnotation and using JS libraries to create the plots.
