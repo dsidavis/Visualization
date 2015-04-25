@@ -12,10 +12,12 @@ source("getMSEvents.R")
 # We had width = "1000px".  This caused the plot to be very narrow.
 # The debugging tools in the browser identified this problem as unparseable.
 obj = gvisAnnotatedTimeLine(ldf, "Date", "price", "company",  annotationvar = "ann", 
-                             options = list(width = 1000 , height = 600, displayAnnotations = TRUE, annotationsWidth = 15))
+                             options = list(width = 1000 , height = 600, displayAnnotations = TRUE, annotationsWidth = 15,
+                             gvis.listener.jscode = c(rangechange = "function(ev) { alert('got event: ' + ev['start'] + ' to ' + ev['end']); return(true);}")))
 
-#print(obj, file = "eg2.html")
 
-plot(obj)
+print(obj, file = "eg2.html")
+
+#plot(obj)
 
 
