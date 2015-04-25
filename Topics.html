@@ -1,6 +1,12 @@
 <!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
 <html> <head>
 <title></title>
+<link rel="stylesheet" href="JSEg/eg.css"/>
+<style type="text/css">
+.hidden {
+ display: none;
+}
+</style>
 </head>
 
 <body>
@@ -40,6 +46,14 @@
         <li>plotKML</li>
         <li>RKML</li>
        </ul>
+       <li> KML Examples
+       <ul>
+	 <li><a href="http://plotkml.r-forge.r-project.org/om.rk.kml"
+    >http://plotkml.r-forge.r-project.org/om.rk.kml</a></li>
+         <li><a href="http://plotkml.r-forge.r-project.org/HRtemp08_jan.kmz" >http://plotkml.r-forge.r-project.org/HRtemp08_jan.kmz</a>
+
+	 </ul>
+       </li>
     </ul>
 </dl>
 
@@ -54,15 +68,78 @@
       <li>animation package</li>
     </ul>
 
+    
 
   <dt>
    <li>Basics of HTML, CSS, JavaScript</li>
   <dd>
     <ul>
       <li><a href="JSEg/jsEg.html" >jsEg.html</a></li>
-      <li><a href="JSEg/jsAutoEg.html" >jsAutoEg.html</a></li>      
+      <li><a href="JSEg/jsAutoEg.html" >jsAutoEg.html</a></li>
+      <li>Debugging tools in the browser</li>
+      <li><a href="ElectionMap/stateTableEx.html" >Election Map</a>  How to implement? <a
+   href="ElectionMap/stateMap.svg" >stateMap.svg</a></li>
+   <p class="hidden">
+   Start with the data in R (scraped from a Web site, e.g., CNN).
+   Then create the plot in R using the maps package and coloring the 
+   </p>
+      <li><a href="http://www-personal.umich.edu/~mejn/election/2008/statepopredblue1024.png"
+   >cartogram</a></li>
+
    </ul>
 
+ <dt>
+ <li>Rich interactive, object-based displays</li>
+ <dd>
+  <ul>
+     <li><a href="http://www.gapminder.org/world" >GapMinder</a></li>
+   </ul>  
+   
+
+ <dt>
+ <li>Google Charts API and the googleVis package</li>
+ </dt>
+ <dd>
+   <ul>
+     <li><a href="googleVis/eg1" >Time Chart (R code)</a>, <a href="googleVis/eg1.html" >display</a> </li>
+     <li><a href="googleVis/eg2" >Annotated Time Chart (R code)</a>, <a href="googleVis/eg2.html" >display</a> </li>
+     <li><a href="googleVis/ldf.R" >R code for getting and transforming the data</a></li>
+</ul>
+ </dd>
+
+<dt>
+  <li>rCharts</li>
+<dd>
+  <ul>
+    <li><a href="rCharts/egSmall.R" >Small time series</a></li>
+    <li><a href="rCharts/maps.R" >Simple map</a></li>
+    <li><a href="rCharts/barChart.R" >Interactive bar chart</a></li>
+   </ul>
+</dd>  
+
+
+<dt>
+<li>Making Interactive Plots using R Graphics</li>
+<dd>
+  <ul>
+    <li>SVGAnnotation:
+     <ul>
+        <li><a href="SVGAnnotation/housing.R" >create the SVG plot</a> (<a href="SVGAnnotation/matplot.svg" >plot</a>)</li>
+	<li><a href="SVGAnnotation/matplot.R" >annotate the matplot</a></li>
+	<li><a href="SVGAnnotation/live_matplot.svg" >interactive matplot</a></li>
+	<li><a href="" ></a></li>
+	
+     </ul>
+    <li>gridSVG</li>
+</ul>
+
+
+<dt>
+<li>ggvis</li> 
+<dd>
+  <ul>
+    <li></li>
+</ul>
 
   <dt>
     <li>D3 - Data Driven Documents</li>
@@ -77,5 +154,5 @@
 <hr>
 <address><a href="http://www.stat.ucdavis.edu/~duncan">Duncan Temple Lang</a>
 <a href=mailto:duncan@r-project.org>&lt;duncan@r-project.org&gt;</a></address>
-<!-- hhmts start --> Last modified: Sat Apr 25 04:39:12 PDT 2015 <!-- hhmts end -->
+<!-- hhmts start --> Last modified: Sat Apr 25 06:14:40 PDT 2015 <!-- hhmts end -->
 </body> </html>

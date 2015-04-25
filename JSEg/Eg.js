@@ -1,6 +1,10 @@
 function toggleRightImage(obj)
 {
-    var img =  document.getElementById('img2');
+    toggleElement(document.getElementById('img2'));
+}
+
+function toggleElement(img)
+{
     console.log(img + " " + img.style);
     var style = img.style;
     if(style.length == 0 || style.display == 'inline')
@@ -13,7 +17,6 @@ function toggleRightImage(obj)
 function changeImage(obj) 
 {
     var img =  document.getElementById('img1');
-//    alert('changing image ' + obj.value + " " + img.src);
     img.src = obj.value;
 
     if(data) {

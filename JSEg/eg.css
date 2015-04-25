@@ -10,3 +10,7 @@ div.note {
   background: lightgray;
   margin: 30px 30px 30px 30px;
 }
+
+.hidden {
+ visibility: hidden;
+}

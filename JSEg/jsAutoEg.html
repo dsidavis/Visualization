@@ -11,25 +11,42 @@
 <h1>Illustraing JavaScript Code in HTML</h1>
 <div class="note">
 <p>
-We create a simple HTML document that displays two images.
-The viewer can change the image on the left using a pull-down menu.
-She can hide and display the image on the right by toggling the checkbox.
+  This is very similar to the display in <a href="jsEg.html" >jsEg.html</a>,
+  but there are important differences.
+  <ul>
+    <li>We create the content of the pull-down menu programmatically.</li>
+    <li>When the viewer selects an animal, we display HTML text/content above the image.</li>
+    <li>We illustrate the alert() JavaScript function.</li>
+</ul>
+
+
 </p>
 <p>
-This is very similar to the document <a href="jsEg.html" >jsEg.html</a>.
-However, here we programmatically create the contents of the SELECT menu,
-  i.e., the OPTION elements.
- We put information about each animal and its image into an "associative array"
-  or named-element container in JavaScript.
-  We have done this in an unintuitive manner with the text displayed in the optin as the key and then
+We put information about each animal and its image into an "associative array"
+or named-element container in JavaScript.
+We have done this in an unintuitive manner with the text displayed in the optin as the key and then
   the information about the image and the text to show describing that animal.
   We should probably have used the file name/URL for the image as the key.
 </p>  
 <p>
-The JavaScript code is stored in a separate file named <a href="Eg.js" >Eg.js </a>
+When the animal changes, there is a relayout that resizes the two images and the layout of the page.
+This is a little jarring as the user interface controls move up or down.
+Similarly, this happens when we hide/show the right image.
+How can we fix this? <input type="button" value="Answer"
+     onclick="var obj = document.getElementById('ol.answer');obj.style.visibility = obj.style.visibility == 'visible' ? 'hidden' : 'visible';" ></a>
+</p>
+<p class="hidden" id="answer" style="visibility: hidden;">
+<ol class="hidden" id="ol.answer">
+<li>
+  We can make all the animal images the same size. We can do this manually outside of the Web page.
+  Alternatively, we can set the width and height attributes of the  IMG element in the HTML document.
+</li>  
+<li>We can use the visibility style with values visible and hidden. The latter causes the object to take up
+space but not be shown. </li>
+</ol>
 </p>
 <p>
-The CSS file for this HTML document is in <a href="eg.css" >eg.css</a>.
+The JavaScript code is stored in a separate file named <a href="Eg.js" >Eg.js </a>
 </p>  
 </div>
 
@@ -66,5 +83,5 @@ for(var key in data) {
 <hr>
 <address><a href="http://www.stat.ucdavis.edu/~duncan">Duncan Temple Lang</a>
 <a href=mailto:duncan@r-project.org>&lt;duncan@r-project.org&gt;</a></address>
-<!-- hhmts start --> Last modified: Fri Apr 24 16:02:00 PDT 2015 <!-- hhmts end -->
+<!-- hhmts start --> Last modified: Sat Apr 25 05:06:59 PDT 2015 <!-- hhmts end -->
 </body> </html>
