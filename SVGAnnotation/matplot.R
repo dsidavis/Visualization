@@ -7,7 +7,7 @@ labels = rownames(housingFrequencies)
 
 doc = xmlParse("housingMatplot.svg")
 
-highlightMatplot(doc, NULL, 8)
+highlightMatplot(doc, NULL, 8, ids = paste0("series", seq(along = labels)))
 
 series = getMatplotSeries(doc)
 
@@ -16,11 +16,13 @@ invisible(mapply(addToolTips,
                 MoreArgs = list(addArea = FALSE)))
 
 #XXX Not quite working. Doesn't recognize C and groups it with B.
-if(FALSE) {
-radioShowHide(doc, labels = labels, within = NA)
-# Should be hidden.
-invisible(mapply(function(node, id)
+if(TRUE) {
+ radioShowHide(doc, labels = labels, within = NA, checkboxCallback = "toggle")
+     # Should be hidden.
+if(FALSE) 
+ invisible(mapply(function(node, id)
                 addAttributes(node, id = id), series, sprintf("series%d", seq(along = series))))
 }
+
 saveXML(doc, "live_matplot.svg")
 
