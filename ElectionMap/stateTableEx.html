@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+                      "http://www.w3.org/TR/html4/strict.dtd">
+<html> <head>
+<title></title>
+<style type="text/css">
+BODY {
+  background: #FFF;
+  margin-left: 3em; /* # 1%; */
+  margin-right: 3em; /* #10%;  */
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+.hidden { display: none; }
+.unhidden { display: block; }
+
+
+
+b.obama, tr.obama > td {
+  color: blue;
+}
+
+b.mccain, tr.mccain > td {
+  color: red;
+}
+
+
+#diva {
+  float: left;
+}
+
+#divb {
+  float: left;
+}
+
+div#who, div#map {
+  clear: both;
+}
+
+div#summaryMap {
+  float: left;
+  background-color: lightgray;
+}
+
+div#countySummary {
+  float: left;
+}
+
+div#main {
+  background-color: red;
+}
+</style>
+
+<script type="text/javascript">
+function show(stateName)
+{
+  var div; 
+  var val;
+  div = document.getElementById("otherImage");
+  val = stateSummaryTables[stateName];
+  div = document.getElementById("stateSummary");
+  div.innerHTML = val;
+
+  val = countyTables[stateName];
+  if(val) {
+    div = document.getElementById("countySummaryContent");
+    div.innerHTML = val;
+  }
+}
+</script>
+
+<script>
+function toggleCountyView()
+{
+ var div = document.getElementById("countySummaryContent");
+ var hidden = div.className == 'hidden';
+ div.className = (hidden) ? 'unhidden' : 'hidden';
+
+  var a = document.getElementById("toggleCounty");
+  a.innerHTML = (hidden) ? "+ Click to hide" : "+ Expand to see county  results";
+}
+</script>
+
+<script type="text/javascript" src="stateHTMLTables.js"></script> <!--  -->
+
+<script type="text/javascript">
+<!-- Need to do this after the page has loaded. Otherwise the SVG -->
+<!-- document has not been created, i.e. when we execute the script in -->
+<!-- line in the body of the HTML document. -->
+function loaded() {
+    show("national");
+     
+    var doc;
+//    doc = document.embeds[0].getSVGDocument();
+    doc = document.getElementById('svgMap');
+    doc = doc.getSVGDocument();
+
+    for(var i = 0; i < polyIds.length ; i++) { 
+        var el = doc.getElementById(polyIds[i]);
+        var txt = "parent.show('" + polyStates[i] + "')";
+        el.setAttribute("onclick", txt);
+    }
+}
+</script>
+
+</head>
+
+<body onload="loaded()">
+
+<center>
+<h3>Presidential Election 2008</h3>
+
+<p>
+The map is interactive in that you can click on
+anywhere within a state to see more detailed
+results about the voting in that state.
+</p>
+</center>
+
+<div id="main">
+
+ <div id="summaryMap">
+
+    <div id="stateSummary"></div>
+
+    <div id="map">
+ <!--      <embed id="svgMap" src="stateMap.svg" type="image/svg+xml" width="700" height="700"> -->
+<object id="svgMap" data="stateMap.svg" type="image/svg+xml" width="700" height="700"> </object>
+    </div>
+ </div>
+
+  <div id="countySummary">
+    <a id="toggleCounty" onclick="toggleCountyView()">+ Click to see county results</a>
+    <div id="countySummaryContent" class="hidden">
+       Click on a state to see more detailed information about the
+       election results for that state.
+    </div>
+  </div>
+</div>
+
+
+<div id="who">
+<hr>
+<address><a href="http://www.stat.ucdavis.edu/~duncan">Duncan Temple Lang</a>
+<a href=mailto:duncan@wald.ucdavis.edu>&lt;duncan@wald.ucdavis.edu&gt;</a></address>
+<!-- hhmts start -->
+Last modified: Thu Dec 24 10:31:14 PST 2009
+<!-- hhmts end -->
+</div>
+</body> </html>

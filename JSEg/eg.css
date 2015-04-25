@@ -1,0 +1,12 @@
+.body {
+  background: #FFF;
+  margin-left: 3em;
+  margin-right: 3em; 
+  font-family: Verdana, Arial, Helvetica, sans-serif;
+}
+
+div.note {
+  border: black 1pt solid;
+  background: lightgray;
+  margin: 30px 30px 30px 30px;
+}

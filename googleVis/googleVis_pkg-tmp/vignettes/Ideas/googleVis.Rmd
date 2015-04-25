@@ -1,0 +1,336 @@
+---
+layout: page
+output:
+  knitrBootstrap::bootstrap_document:
+    title: "Using the Google Chart Tools with R"
+    theme.chooser: TRUE
+    highlight.chooser: TRUE
+---
+
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Using the Google Chart Tools with R}
+-->
+
+
+Using the Google Chart Tools with R
+========================================================
+**Markus Gesmann and Diego de Castillo**
+
+```{r bib, echo=FALSE, message=FALSE}
+library(googleVis)
+options(gvis.plot.tag="chart")
+library(knitcitations)
+bib <- read.bibtex("googleVis.bib")
+bib <- lapply(bib, 
+              function(x) {
+                x$title <- gsub("\\}","", gsub("\\{", "", x$title));x
+                })
+```
+
+
+# Overview
+
+The googleVis package provides an interface between R and the
+Google Chart Tools.  The Google Chart Tools offer interactive
+charts which can be embedded into web pages. The best 
+known of these charts is probably the Motion Chart, popularised 
+by Hans Rosling in his TED talks. 
+ 
+The functions of the googleVis package allow the user to visualise
+data stored in R data frames with the Google Chart Tools
+without uploading the data to Google. The output of a `googleVis`
+function is html code that contains the data and references to
+JavaScript functions hosted by Google.
+  
+googleVis makes use of the internal R HTTP server to display the
+output locally. A modern browser with an Internet connection is
+required and for some charts Flash.
+
+# Introduction
+
+## Motivation
+
+More and more data is becoming available, and yet
+stories and insights are still often missed: we are lost in the data
+jungle and struggle to see the wood for the trees. 
+
+Hence, new tools are required to bring data to life, to engage with
+users, to enable them to slice and dice the data, to view it from
+various angles and to find stories worth telling: outliers, trends or
+even the obvious. 
+
+In 2006 Hans Rosling gave an inspiring talk at
+TED `r citep(bib["HansRoslingTedTalk"])` about social and economic developments
+in the world over the past 50 years, which challenged the views and
+perceptions of many listeners. Rosling had used extensive data analysis
+to reach his conclusions.  To visualise his talk, he and his team at
+Gapminder `r citep(bib["Gapminder"])` had developed animated bubble charts, aka
+motion charts. 
+
+Rosling's presentation popularised the idea and use of interactive
+charts. One year later the software behind
+Gapminder was bought by Google and integrated as motion charts into
+their Google Chart Tools `r citep(bib["GoogleVisApi"])`, formerly known as Google
+Visualisation API.  
+
+In 2010 Sebastian Perez Saaibi `r citep(bib["Saaibi2010"])` presented at the 
+R/Rmetrics Workshop on  Computational Finance and Financial
+Engineering, the idea to use Google motion charts to visualise R
+output with the R.rsp package `r citep(bib["Rsp"])`. 
+
+Inspired by those talks and the desire to use interactive data
+visualisation tools to foster the dialogue between data analysts and
+others the authors of this vignette started the development of the
+`googleVis` package `r citep(bib["googleVis"])`,
+`r citep(bib["RJournal:2011-2:GesmannCastillo"])` in August 2010. 
+
+![Overview of a Google Motion Chart](./figures/MotionChart.png)
+
+*Overview of a Google Motion Chart.  Screenshot of the output of
+`plot(gvisMotionChart(Fruits, idvar='Fruit', timevar='Year'))`*
+
+## Google Chart Tools
+
+The Google Chart Tools `r citep(bib["GoogleVisApi"])`
+allow users to create interactive charts as part of Google
+documents, spreadsheets and web pages. In this text we will focus 
+on the usage of the API as part of web pages.
+
+The Google Public Data Explorer `r citep(bib["GooglePublicData"])` provides a
+good example, demonstrating the use of interactive charts and how they can
+help to analyse data. Please note, that all of those charts are
+rendered by the browser.
+
+The charting data can either be embedded into the html file or read
+dynamically. The key to the Google Chart Tools is that the data is
+structured in a DataTable `r citep(bib["DataTable"])`, and this is 
+where the googleVis
+package helps, as it transforms R data frames into JSON `r citep(bib["json"])`
+objects, using the `RJSONIO` package `r citep(bib["RJSONIO"])`, as
+the basis for a DataTable. 
+
+As an example we shall look at the html-code of a motion chart from
+Google's visualisation gallery `r citep(bib["GoogleMotionChart"])`, which
+generates output similar to figure below.
+
+```
+ 1 <html>
+ 2  <head>
+ 3   <script type="text/javascript" 
+ 4     src="http://www.google.com/jsapi">
+ 5   </script>
+ 6   <script type="text/javascript">
+ 7     google.load('visualization', '1', 
+ 8      {'packages':['motionchart']});
+ 9    google.setOnLoadCallback(drawChart);
+10    function drawChart() {
+11    var data=new google.visualization.DataTable();
+12    data.addColumn('string', 'Fruit');
+13    data.addColumn('date', 'Date');
+14    data.addColumn('number', 'Sales');
+15    data.addColumn('number', 'Expenses');
+16    data.addColumn('string', 'Location');
+17    data.addRows([
+18    ['Apples',new Date(1988,0,1),1000,300,'East'],
+19    ['Oranges',new Date(1988,0,1),1150,200,'West'],
+20    ['Bananas',new Date(1988,0,1),300,250,'West'],
+21    ['Apples',new Date(1989,6,1),1200,400,'East'],
+22    ['Oranges',new Date(1989,6,1),750,150,'West'],
+23    ['Bananas',new Date(1989,6,1),788,617,'West']
+24    ]);
+25    var chart=new google.visualization.MotionChart(
+26      document.getElementById('chart_div'));
+27    chart.draw(data, {width: 600, height:300});
+28   }
+29   </script>
+30  </head>
+31  <body>
+32   <div id="chart_div" 
+33        style="width:600px; height:300px;">
+34   </div>
+35  </body>
+36 </html>
+```
+The code and data are processed and rendered by the browser and is
+not submitted to any [server](https://google-developers.appspot.com/chart/interactive/docs/gallery/motionchart.html#Data_Policy). 
+
+You will notice that the above html code has five generic
+parts:
+
+1. references to Google's AJAX (l. 4) and Visualisation
+  API (ll. 7 -- 8),
+2. data to visualise as a `DataTable` (ll. 11 -- 24),
+3. an instance call to create the chart (ll. 25 -- 26),
+4. a method call to draw the chart including options, shown
+  here as width and height (l. 27),
+5. an HTML `<div>` element to add the chart to the page (ll.
+  32 -- 34).
+  
+These principles hold true for most of the interactive charts of the
+Google Chart Tools, see the examples in Figure below.
+
+However, before you use the API you should read the 
+[Google Terms of Service](https://developers.google.com/terms/). 
+
+
+# The googleVis package
+
+The googleVis package provides an interface between R and the Google
+Chart Tools.  The functions of the package allow the user to
+visualise data stored in R data frames with the Google Chart Tools.
+
+Version `r packageDescription("googleVis")[['Version']]` of the package
+provides interfaces to  Motion Charts, Annotated Time Lines, 
+Maps, Geo Maps, Geo Charts, Intensity Maps, Tables, Gauges, 
+Tree Maps, further Line, Bar, Bubble, Column, Area, Stepped Area, 
+Combo, Scatter, Candlestick, Pie, Sankey, Annotation, 
+Histogram, Timeline, Calendar and Org Charts. 
+
+Execute `demo(googleVis)` to see examples of the charts.
+
+The output of a googleVis function is html code that contains the
+data and references to JavaScript functions hosted by Google. A
+browser with an Internet connection is required to view
+the output, and for Motion Charts, Geo Maps and Annotated Time Lines
+also Flash. 
+
+![Screen shot](./figures/googleVisDemoPlots.png)
+
+*Screenshot of some of the outputs of `demo(googleVis)`. Clockwise from top left:  `gvisMotionChart, gvisAnnotatedTimeLine, gvisGeoMap, gvisTreeMap, gvisTablez` and `gvisMap`.*
+
+## Installation
+
+You can install googleVis in the usual way from CRAN, e.g.:
+```{r, eval=FALSE}
+install.packages('googleVis') 
+```
+The installation was successful if the
+command `library(googleVis)` gives you the following message:
+```{r, eval=FALSE}
+library(googleVis)
+```
+```{r,echo=FALSE}
+cat(googleVis:::gvisWelcomeMessage())
+```
+
+
+
+## Using the googleVis package
+
+The individual functions of the googleVis package are documented in
+the help pages. Here we will cover only the principles of
+the package.
+
+As an example we will show how to generate a motion chart as displayed in   
+figure below. It works similarly for the other
+APIs. Further examples are covered in the demos
+of the googleVis package.
+
+The design of the visualisation functions is fairly generic. The name
+of the visualisation function is `'gvis' + ChartType`. So for
+the Motion Chart we have: 
+```
+gvisMotionChart(data, idvar='id', timevar='date', 
+                options=list(), chartid)
+```
+Here `data` is the input `data.frame` and `idvar`
+and `timevar` specify the column names of the id variable and
+time variable for the plot, while display options are set in an
+optional list, which we discuss in more detail on
+page settingoptions. The options and data requirements
+follow those of the Google Chart Tools and are documented in the
+help pages, see 
+```
+help('gvisMotionChart')
+```
+
+![Schematic](./figures/gvisObject.png)
+
+*Schematic structure of a gvis list object.*
+
+The argument `chartid` allows the user to set a chart id of the
+output chart manually. If the argument is missing a random id using 
+`tempfile(pattern=\textquotesingle\textquotesingle)`
+will be generated. Unique chart ids are required to place more than
+one chart on a web page. 
+
+The output of a googleVis function is a list of lists (a nested list)
+containing information about the chart type, chart id and the html
+code in a  sub-list with header, chart, caption and footer, see figure above
+
+The idea behind this concept is that users can get a
+complete web page, while at the same time offer a facility to extract 
+specific parts, such as the chart itself. 
+This is particularly helpful if the package functions
+are used in solutions where the user wants to feed the visualisation
+output into other sites, or would like to embed them into rsp-pages,  
+use `rApache` or Google Gadgets.  
+
+The output of a googleVis function will be of class `'gvis'`
+and `'list'`. Generic print (`print.gvis`)  and plot
+(`plot.gvis`) functions exist to ease the handling of such objects. 
+
+To illustrate the concept we shall create a motion chart using the
+`Fruits` data set. 
+
+
+## Motion Chart Example
+
+Following the documentation of the Google Motion Chart API we need a
+data set which has at least four columns: one identifying the
+variable we would like to plot, one time variable and at least two
+numerical variables, further numerical and character columns are allowed.
+
+As an example we use the `Fruits` data set:
+
+```{r Fruits}
+data(Fruits)
+Fruits
+```
+
+Here we will use the columns `Fruit` and
+`'Year'` as id and time variable respectively. However we could
+have used `'Date'` instead of `'Year'` as well. 
+
+
+```{r motionchartfruits, results='asis'}
+ M <- gvisMotionChart(Fruits, idvar="Fruit", timevar="Year")
+plot(M)
+```
+
+## World Bank Example
+
+<iframe src="http://mages.github.io/googleVis/WorldBank.html"
+ frameborder="0" width="700px" height="650px">Loading</iframe>
+```{r WorldBank, eval=FALSE, tidy=FALSE}
+library(googleVis)
+library(WDI)
+inds <- c('SP.DYN.TFRT.IN','SP.DYN.LE00.IN', 'SP.POP.TOTL',
+          'NY.GDP.PCAP.CD', 'SE.ADT.1524.LT.FE.ZS')
+indnams <- c("fertility.rate", "life.expectancy", "population",
+             "GDP.per.capita.Current.USD", "15.to.25.yr.female.literacy")
+wdiData <- WDI(country="all", indicator=inds,
+               start=1960, end=format(Sys.Date(), "%Y"), extra=TRUE)
+colnum <- match(inds, names(wdiData))
+ 
+names(wdiData)[colnum] <- indnams
+## Create a motion chart
+library(googleVis)
+WorldBank <- droplevels(subset(wdiData, !region %in% "Aggregates"))
+M <- gvisMotionChart(WorldBank,
+                     idvar="country", timevar="year",
+                     xvar="life.expectancy", yvar="fertility.rate",
+                     colorvar="region", sizevar="population",
+                     options=list(width=550, height=500), chartid="WorldBank")
+## Display the chart in the browser
+plot(M)
+```
+
+
+
+# References
+
+```{r bibliography, results='asis', echo=FALSE}
+bibliography(bulleted=FALSE)
+```

@@ -1,0 +1,1396 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta http-equiv="Content-Style-Type" content="text/css" />
+  <meta name="generator" content="pandoc" />
+  <title></title>
+  <style type="text/css">code{white-space: pre;}</style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- jQuery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+  
+  <!-- bootstrap -->
+  <!--<link href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet"  id="style">-->
+  <script src="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  
+  <!-- highlight.js -->
+  <!--<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/default.min.css" rel="stylesheet" id="code-style">-->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/highlight.min.js"></script>
+  <script>
+  hljs.LANGUAGES.r=function(a){var b="([a-zA-Z]|\\.[a-zA-Z.])[a-zA-Z0-9._]*";return{c:[a.HCM,{b:b,l:b,k:{keyword:"function if in break next repeat else for return switch while try tryCatch|10 stop warning require library attach detach source setMethod setGeneric setGroupGeneric setClass ...|10",literal:"NULL NA TRUE FALSE T F Inf NaN NA_integer_|10 NA_real_|10 NA_character_|10 NA_complex_|10"},r:0},{cN:"number",b:"0[xX][0-9a-fA-F]+[Li]?\\b",r:0},{cN:"number",b:"\\d+(?:[eE][+\\-]?\\d*)?L\\b",r:0},{cN:"number",b:"\\d+\\.(?!\\d)(?:i\\b)?",r:0},{cN:"number",b:"\\d+(?:\\.\\d*)?(?:[eE][+\\-]?\\d*)?i?\\b",r:0},{cN:"number",b:"\\.\\d+(?:[eE][+\\-]?\\d*)?i?\\b",r:0},{b:"`",e:"`",r:0},{cN:"string",b:'"',e:'"',c:[a.BE],r:0},{cN:"string",b:"'",e:"'",c:[a.BE],r:0}]}}(hljs); </script>
+  <!--<script type="text/javascript", src="https://yandex.st/highlightjs/7.3/languages/r.min.js"></script>-->
+  
+  <!-- Manific Popup -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/0.8.9/jquery.magnific-popup.min.js"></script>
+  
+  <script type="text/javascript"
+    src="https://c328740.ssl.cf1.rackcdn.com/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML">
+  </script><script defer="defer">// Function to generate the dynamic table of contents
+  jQuery.fn.generate_TOC = function () {
+    var base = $(this[0]);
+  
+    var selectors = ['h1', 'h2', 'h3', 'h4'];
+  
+    var last_ptr = [{}, {}, {}, {}];
+  
+    var anchors = {};
+  
+    generate_anchor = function (text) {
+      var test = text.replace(/\W/g, '_');
+  
+      while(test in anchors){
+        //if no suffix, add one
+        if(test.match(/_\d+$/) === null){
+          test = test + "_2";
+        }
+        //else generate unique id for duplicates by adding one to the suffix
+        else {
+          test = test.replace(/_(\d+)$/, function(match, number){ var num=+number+1; return("_" + num) });
+        }
+      }
+      anchors[test]=1;
+      return(test);
+    }
+  
+    $(selectors.join(',')).filter(function(index) { return $(this).parent().attr("id") != 'header'; }).each(function () {
+  
+      var heading = $(this);
+      var idx = selectors.indexOf(heading.prop('tagName').toLowerCase());
+      var itr = 0;
+  
+      while (itr <= idx) {
+        if (jQuery.isEmptyObject(last_ptr[itr])) {
+          last_ptr[itr] = $('<ul>').addClass('nav');
+          if (itr === 0) {
+            base.append(last_ptr[itr])
+          } else {
+            if(last_ptr[itr-1].children('li').length === 0){
+              last_ptr[itr-1].append(last_ptr[itr]);
+            }
+            else {
+              last_ptr[itr - 1].children('li').last().append(last_ptr[itr]);
+            }
+          }
+        }
+        itr++;
+      }
+      var anchor = generate_anchor(heading.text());
+      heading.attr('id', anchor);
+      var a = $('<a>')
+      .text(heading.text())
+      .attr('href', '#' + anchor);
+  
+    var li = $('<li>')
+      .append(a);
+  
+    last_ptr[idx].append(li);
+    for (i = idx + 1; i < last_ptr.length; i++) {
+      last_ptr[i] = {};
+    }
+    });
+  }
+  /* run scripts when document is ready */
+  $(function() {
+    "use strict";
+  
+    var $window = $(window);
+    var $body = $(document.body);
+  
+    /* size of thumbnails */
+  
+    var hidden_types = ['source']
+    var output_types = ['output', 'message', 'warning', 'error']
+  
+    /* style tables */
+    $('table').addClass('table table-striped table-bordered table-hover table-condensed');
+  
+    $('pre code').each(function(i, e) {
+      hljs.highlightBlock(e);
+    });
+  
+    /* Magnific Popup */
+    $(".thumbnail").each(function(){
+      $(this).magnificPopup({
+        disableOn: 768,
+        closeOnContentClick: true,
+  
+        type: 'image',
+        items: {
+          src: $(this).find('img').attr('src'),
+        }
+      });
+    });
+  
+    function toggle_block(obj, show) {
+      var span = obj.find('span');
+      if(show === true){
+        span.removeClass('glyphicon-chevron-up').addClass('glyphicon-chevron-down');
+        obj.next('pre').slideDown();
+      }
+      else {
+        span.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-up');
+        obj.next('pre').slideUp();
+      }
+    }
+  
+    function toggle_thumbnails(imgs, show){
+      if(show === true){
+        imgs.parents().show()
+        imgs.slideDown();
+      }
+      else {
+        imgs.slideUp(400, function(){ $(this).parent().hide(); });
+      }
+    }
+  
+    function global_toggle(obj){
+      var type = obj.attr('type');
+      var show = !obj.parent('li').hasClass('active');
+      if(show === true){
+        obj.parent('li').addClass('active');
+      }
+      else{
+        obj.parent('li').removeClass('active');
+      }
+      if(type == 'figure'){
+        toggle_thumbnails($('.thumbnail img'), show);
+      }
+      else {
+        $('.toggle.' + type).each(function() { toggle_block($(this), show); });
+      }
+    }
+  
+    /* onclick toggle next code block */
+    $('.toggle').click(function() {
+      var span = $(this).find('span');
+      toggle_block($(this), !span.hasClass('glyphicon-chevron-down'));
+      return false
+    })
+  
+    // global toggles
+    $('.toggle-global').click(function(){
+      var type = $(this).attr('type');
+      if(type === 'all-source'){
+          $('li a.source').each(function() {
+            global_toggle($(this));
+          });
+        }
+      else if(type === 'all-output'){
+        $.each(output_types, function(i, val){
+          console.log(val);
+          global_toggle($('li a.' + val));
+        });
+      }
+      else {
+        console.log($(this));
+        global_toggle($(this));
+      }
+      return false;
+    });
+    /* table of contents */
+    if($(['h1', 'h2', 'h3', 'h4'].join(',')).length > 0){
+      $('body > #wrap > .container > .row').append('<div class="col-md-2"><div id="toc" class="well sidebar sidenav affix hidden-print"/></div>');
+      $('#toc').generate_TOC();
+    }
+  
+    $.each(hidden_types, function(i, type) {
+      $('li[type=' + type + ']').each(function(){ global_toggle($(this)); });
+    });
+  
+    /* remove paragraphs with no content */
+    $('p:empty').remove();
+  
+    $body.scrollspy({
+      target: '.sidebar',
+    });
+  
+    /* theme switch */
+    $('.theme-switch').click(function(){
+      var css = $('link[title=' + $(this).attr('title') + ']');
+      $('#theme[rel=stylesheet]').attr('href', css.attr('href'));
+      $('.theme-switch').closest('li').removeClass('active');
+      $(this).closest('li').addClass('active');
+      return false;
+    });
+    /* code style switch */ //TODO use same function for both of these?
+    $('.highlight-switch').click(function(){
+      var css = $('link[title="' + $(this).attr('title') + '"]');
+      $('#highlight[rel=stylesheet]').attr('href', css.attr('href'));
+      $('.highlight-switch').closest('li').removeClass('active');
+      $(this).closest('li').addClass('active');
+      return false;
+    });
+  
+    //TODO refresh on show/hide
+    $window.on('load', function () {
+      $body.scrollspy('refresh');
+    })
+  
+  });
+  </script><style>/* Knitr_bootstrap styles */
+  #header {
+    display: none !important;
+    visibility: hidden !important;
+  }
+  #wrap .container-fluid {
+    padding: 0;
+    overflow: hidden;
+  }
+  .toggle{
+    text-transform: capitalize;
+  }
+  
+  .toggle-global{
+    text-transform: capitalize;
+  }
+  
+  /* Sticky footer styles */
+  * {
+    margin:0;
+  }
+  html,
+  body {
+      height: 100%;
+      padding:0 !important;
+      /* The html and body elements cannot have any padding or margin. */
+      /*overflow-x: hidden;*/
+  }
+  
+  /* Wrapper for page content to push down footer */
+  #wrap {
+      min-height: 100%;
+      height: auto !important;
+      height: 100%;
+      /* Negative indent footer by it's height */
+      margin: 0 auto -120px;
+  }
+  
+  /* Set the fixed height of the footer here */
+  #push,
+  #footer {
+      height: 120px;
+  }
+  
+  #footer {
+    text-align: center;
+  }
+  
+  /* Top level subheader elements.  These are the first nested items underneath a header element. */
+  .header li {
+    font-size: 20px;
+  }
+  
+  /* Makes the font smaller for all subheader elements. */
+  .sub-header li {
+      font-size: 12px;
+  }
+  
+  button.thumbnails {
+    margin-left:0px;
+  }
+  
+  /*
+   * Side navigation
+   *
+   * Scrollspy and affixed enhanced navigation to highlight sections and secondary
+   * sections of docs content.
+   */
+  
+  /* By default it's not affixed in mobile views, so undo that */
+  .sidebar.affix {
+    position: static;
+  }
+  
+  /* First level of nav */
+  .sidenav {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    padding-top:    10px;
+    padding-bottom: 10px;
+    border-radius: 5px;
+  }
+  
+  /* All levels of nav */
+  .sidebar .nav > li > a {
+    display: block;
+    padding: 5px 20px;
+  }
+  .sidebar .nav > li > a:hover,
+  .sidebar .nav > li > a:focus {
+    text-decoration: none;
+    border-right: 1px solid;
+  }
+  .sidebar .nav > .active > a,
+  .sidebar .nav > .active:hover > a,
+  .sidebar .nav > .active:focus > a {
+    font-weight: bold;
+    background-color: transparent;
+    border-right: 1px solid;
+  }
+  
+  /* Nav: second level (shown on .active) */
+  .sidebar .nav .nav {
+    display: none; /* Hide by default, but at >768px, show it */
+    margin-bottom: 8px;
+  }
+  .sidebar .nav .nav > li > a {
+    padding-top:    3px;
+    padding-bottom: 3px;
+    padding-left: 30px;
+    font-size: 90%;
+  }
+  
+  .sidebar .nav .nav .nav > li > a {
+    padding-left: 40px;
+  }
+  .sidebar .nav .nav .nav .nav > li > a {
+    padding-left: 50px;
+  }
+  
+  /* Show and affix the side nav when space allows it */
+  @media screen and (min-width: 992px) {
+    .sidebar .nav > .active > ul {
+      display: block;
+    }
+    /* Widen the fixed sidebar */
+    .sidebar.affix,
+    .sidebar.affix-bottom {
+      width: 213px;
+    }
+    .sidebar.affix-top,
+    .sidebar.affix {
+      position: fixed; /* Undo the static from mobile first approach */
+      top: 30px;
+    }
+    .sidebar.affix-bottom {
+      position: absolute; /* Undo the static from mobile first approach */
+    }
+    .sidebar.affix-bottom .sidenav,
+    .sidebar.affix .sidenav {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+  }
+  @media screen and (min-width: 1200px) {
+    /* Widen the fixed sidebar again */
+    .sidebar.affix-bottom,
+    .sidebar.affix {
+      width: 263px;
+    }
+  }
+  
+  #toc {
+    padding: 10px 0px;
+    margin:0;
+    border:0;
+  }
+  
+  
+  .panel pre {
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+  button + pre {
+    margin: 0;
+    padding: 0;
+  }
+  pre code {
+    border-radius: 0;
+  }
+  /* Magnific Popup CSS */
+  .mfp-bg {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1042;
+    overflow: hidden;
+    position: fixed;
+    background: #0b0b0b;
+    opacity: 0.8;
+    filter: alpha(opacity=80); }
+  
+  .mfp-wrap {
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1043;
+    position: fixed;
+    outline: none !important;
+    -webkit-backface-visibility: hidden; }
+  
+  .mfp-container {
+    text-align: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    padding: 0 8px;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box; }
+  
+  .mfp-container:before {
+    content: '';
+    display: inline-block;
+    height: 100%;
+    vertical-align: middle; }
+  
+  .mfp-align-top .mfp-container:before {
+    display: none; }
+  
+  .mfp-content {
+    position: relative;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0 auto;
+    text-align: left;
+    z-index: 1045; }
+  
+  .mfp-inline-holder .mfp-content,
+  .mfp-ajax-holder .mfp-content {
+    width: 100%;
+    cursor: auto; }
+  
+  .mfp-ajax-cur {
+    cursor: progress; }
+  
+  .mfp-zoom-out-cur,
+  .mfp-zoom-out-cur .mfp-image-holder .mfp-close {
+    cursor: -moz-zoom-out;
+    cursor: -webkit-zoom-out;
+    cursor: zoom-out; }
+  
+  .mfp-zoom {
+    cursor: pointer;
+    cursor: -webkit-zoom-in;
+    cursor: -moz-zoom-in;
+    cursor: zoom-in; }
+  
+  .mfp-auto-cursor .mfp-content {
+    cursor: auto; }
+  
+  .mfp-close,
+  .mfp-arrow,
+  .mfp-preloader,
+  .mfp-counter {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none; }
+  
+  .mfp-loading.mfp-figure {
+    display: none; }
+  
+  .mfp-hide {
+    display: none !important; }
+  
+  .mfp-preloader {
+    color: #cccccc;
+    position: absolute;
+    top: 50%;
+    width: auto;
+    text-align: center;
+    margin-top: -0.8em;
+    left: 8px;
+    right: 8px;
+    z-index: 1044; }
+  
+  .mfp-preloader a {
+    color: #cccccc; }
+  
+  .mfp-preloader a:hover {
+    color: white; }
+  
+  .mfp-s-ready .mfp-preloader {
+    display: none; }
+  
+  .mfp-s-error .mfp-content {
+    display: none; }
+  
+  button.mfp-close,
+  button.mfp-arrow {
+    overflow: visible;
+    cursor: pointer;
+    background: transparent;
+    border: 0;
+    -webkit-appearance: none;
+    display: block;
+    padding: 0;
+    z-index: 1046;
+    -webkit-box-shadow: none;
+    box-shadow: none; }
+  
+  button::-moz-focus-inner {
+    padding: 0;
+    border: 0; }
+  
+  .mfp-close {
+    width: 44px;
+    height: 44px;
+    line-height: 44px;
+    position: absolute;
+    right: 0;
+    top: 0;
+    text-decoration: none;
+    text-align: center;
+    opacity: 0.65;
+    padding: 0 0 18px 10px;
+    color: white;
+    font-style: normal;
+    font-size: 28px;
+    font-family: Arial, Baskerville, monospace; }
+    .mfp-close:hover, .mfp-close:focus {
+      opacity: 1; }
+    .mfp-close:active {
+      top: 1px; }
+  
+  .mfp-close-btn-in .mfp-close {
+    color: #333333; }
+  
+  .mfp-image-holder .mfp-close,
+  .mfp-iframe-holder .mfp-close {
+    color: white;
+    right: -6px;
+    text-align: right;
+    padding-right: 6px;
+    width: 100%; }
+  
+  .mfp-counter {
+    position: absolute;
+    top: 0;
+    right: 0;
+    color: #cccccc;
+    font-size: 12px;
+    line-height: 18px; }
+  
+  .mfp-arrow {
+    position: absolute;
+    opacity: 0.65;
+    margin: 0;
+    top: 50%;
+    margin-top: -55px;
+    padding: 0;
+    width: 90px;
+    height: 110px;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0); }
+  
+  .mfp-arrow:active {
+    margin-top: -54px; }
+  
+  .mfp-arrow:hover,
+  .mfp-arrow:focus {
+    opacity: 1; }
+  
+  .mfp-arrow:before, .mfp-arrow:after,
+  .mfp-arrow .mfp-b,
+  .mfp-arrow .mfp-a {
+    content: '';
+    display: block;
+    width: 0;
+    height: 0;
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin-top: 35px;
+    margin-left: 35px;
+    border: medium inset transparent; }
+  .mfp-arrow:after,
+  .mfp-arrow .mfp-a {
+    border-top-width: 13px;
+    border-bottom-width: 13px;
+    top: 8px; }
+  .mfp-arrow:before,
+  .mfp-arrow .mfp-b {
+    border-top-width: 21px;
+    border-bottom-width: 21px; }
+  
+  .mfp-arrow-left {
+    left: 0; }
+    .mfp-arrow-left:after,
+    .mfp-arrow-left .mfp-a {
+      border-right: 17px solid white;
+      margin-left: 31px; }
+    .mfp-arrow-left:before,
+    .mfp-arrow-left .mfp-b {
+      margin-left: 25px;
+      border-right: 27px solid #3f3f3f; }
+  
+  .mfp-arrow-right {
+    right: 0; }
+    .mfp-arrow-right:after,
+    .mfp-arrow-right .mfp-a {
+      border-left: 17px solid white;
+      margin-left: 39px; }
+    .mfp-arrow-right:before,
+    .mfp-arrow-right .mfp-b {
+      border-left: 27px solid #3f3f3f; }
+  
+  .mfp-iframe-holder {
+    padding-top: 40px;
+    padding-bottom: 40px; }
+  
+  .mfp-iframe-holder .mfp-content {
+    line-height: 0;
+    width: 100%;
+    max-width: 900px; }
+  
+  .mfp-iframe-scaler {
+    width: 100%;
+    height: 0;
+    overflow: hidden;
+    padding-top: 56.25%; }
+  
+  .mfp-iframe-scaler iframe {
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+    background: black; }
+  
+  .mfp-iframe-holder .mfp-close {
+    top: -40px; }
+  
+  /* Main image in popup */
+  img.mfp-img {
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    line-height: 0;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    padding: 40px 0 40px;
+    margin: 0 auto; }
+  
+  /* The shadow behind the image */
+  .mfp-figure:after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 40px;
+    bottom: 40px;
+    display: block;
+    right: 0;
+    width: auto;
+    height: auto;
+    z-index: -1;
+    box-shadow: 0 0 8px rgba(0, 0, 0, 0.6);
+    background: #444444; }
+  
+  .mfp-figure {
+    line-height: 0; }
+  
+  .mfp-bottom-bar {
+    margin-top: -36px;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    cursor: auto; }
+  
+  .mfp-title {
+    text-align: left;
+    line-height: 18px;
+    color: #f3f3f3;
+    word-wrap: break-word;
+    padding-right: 36px; }
+  
+  .mfp-figure small {
+    color: #bdbdbd;
+    display: block;
+    font-size: 12px;
+    line-height: 14px; }
+  
+  .mfp-image-holder .mfp-content {
+    max-width: 100%; }
+  
+  .mfp-gallery .mfp-image-holder .mfp-figure {
+    cursor: pointer; }
+  
+  @media screen and (max-width: 800px) and (orientation: landscape), screen and (max-height: 300px) {
+    /**
+     * Remove all paddings around the image on small screen
+     */
+    .mfp-img-mobile .mfp-image-holder {
+      padding-left: 0;
+      padding-right: 0; }
+  
+    .mfp-img-mobile img.mfp-img {
+      padding: 0; }
+  
+    /* The shadow behind the image */
+    .mfp-img-mobile .mfp-figure:after {
+      top: 0;
+      bottom: 0; }
+  
+    .mfp-img-mobile .mfp-bottom-bar {
+      background: rgba(0, 0, 0, 0.6);
+      bottom: 0;
+      margin: 0;
+      top: auto;
+      padding: 3px 5px;
+      position: fixed;
+      -webkit-box-sizing: border-box;
+      -moz-box-sizing: border-box;
+      box-sizing: border-box; }
+  
+    .mfp-img-mobile .mfp-bottom-bar:empty {
+      padding: 0; }
+  
+    .mfp-img-mobile .mfp-counter {
+      right: 5px;
+      top: 3px; }
+  
+    .mfp-img-mobile .mfp-close {
+      top: 0;
+      right: 0;
+      width: 35px;
+      height: 35px;
+      line-height: 35px;
+      background: rgba(0, 0, 0, 0.6);
+      position: fixed;
+      text-align: center;
+      padding: 0; }
+  
+    .mfp-img-mobile .mfp-figure small {
+      display: inline;
+      margin-left: 5px; } }
+  @media all and (max-width: 900px) {
+    .mfp-arrow {
+      -webkit-transform: scale(0.75);
+      transform: scale(0.75); }
+  
+    .mfp-arrow-left {
+      -webkit-transform-origin: 0;
+      transform-origin: 0; }
+  
+    .mfp-arrow-right {
+      -webkit-transform-origin: 100%;
+      transform-origin: 100%; }
+  
+    .mfp-container {
+      padding-left: 6px;
+      padding-right: 6px; } }
+  .mfp-ie7 .mfp-img {
+    padding: 0; }
+  .mfp-ie7 .mfp-bottom-bar {
+    width: 600px;
+    left: 50%;
+    margin-left: -300px;
+    margin-top: 5px;
+    padding-bottom: 5px; }
+  .mfp-ie7 .mfp-container {
+    padding: 0; }
+  .mfp-ie7 .mfp-content {
+    padding-top: 44px; }
+  .mfp-ie7 .mfp-close {
+    top: 0;
+    right: 0;
+    padding-top: 0; }
+  
+  //Magnific overrides
+  .mfp-image img{
+    background: white;
+  }
+  .mfp-figure:after {
+    background: white;
+  }
+  
+  /*
+   * Off Canvas navbar toggle right
+   * --------------------------------------------------
+   */
+  
+  @media screen and (max-width: 768px) {
+    .row-offcanvas .collapsing {
+    -webkit-transition: none 0;
+      -moz-transition: none 0;
+      transition: none 0;
+    }
+   .row-offcanvas .navbar {
+    position: absolute;
+    z-index: 2;
+      right:0;
+      height:100%;
+      width:55px;
+      border:0;
+      background-color:transparent;
+    }
+    .row-offcanvas .navbar-toggle {
+      margin-right: 5px;
+      margin-left: 5px;
+    }
+    .row-offcanvas {
+      position: relative;
+    }
+    .row-offcanvas-right.active .navbar {
+    position: absolute;
+    z-index: 2;
+      right: -28.4%;
+      width:40%;
+      background-color:#eee;
+      border:0 solid #ddd;
+      border-left-width:1px;
+    }
+    .row-offcanvas-right.active {
+      left: -30%;
+    }
+    .row-offcanvas-right.active .navbar-collapse {
+      position: relative;
+      width: 100%;
+    }
+    .row-offcanvas .content {
+    /*width:calc(100% - 60px);*/
+    }
+  }</style>
+</head>
+<body>
+<title >
+Using the Google Chart Tools with R
+</title><div id="wrap"><div class="container"><div class="row row-offcanvas row-offcanvas-right"><div class="contents col-xs-12 col-md-10">
+<!--
+%\VignetteEngine{knitr::rmarkdown}
+%\VignetteIndexEntry{Using the Google Chart Tools with R}
+-->
+
+
+<h1 id="using-the-google-chart-tools-with-r">Using the Google Chart Tools with R</h1>
+<p><strong>Markus Gesmann and Diego de Castillo</strong></p>
+<h1 id="overview">Overview</h1>
+<p>The googleVis package provides an interface between R and the Google Chart Tools. The Google Chart Tools offer interactive charts which can be embedded into web pages. The best known of these charts is probably the Motion Chart, popularised by Hans Rosling in his TED talks.</p>
+<p>The functions of the googleVis package allow the user to visualise data stored in R data frames with the Google Chart Tools without uploading the data to Google. The output of a <code>googleVis</code> function is html code that contains the data and references to JavaScript functions hosted by Google.</p>
+<p>googleVis makes use of the internal R HTTP server to display the output locally. A modern browser with an Internet connection is required and for some charts Flash.</p>
+<h1 id="introduction">Introduction</h1>
+<h2 id="motivation">Motivation</h2>
+<p>More and more data is becoming available, and yet stories and insights are still often missed: we are lost in the data jungle and struggle to see the wood for the trees.</p>
+<p>Hence, new tools are required to bring data to life, to engage with users, to enable them to slice and dice the data, to view it from various angles and to find stories worth telling: outliers, trends or even the obvious.</p>
+<p>In 2006 Hans Rosling gave an inspiring talk at TED (<a href="">Rosling, 2006</a>) about social and economic developments in the world over the past 50 years, which challenged the views and perceptions of many listeners. Rosling had used extensive data analysis to reach his conclusions. To visualise his talk, he and his team at Gapminder (<a href="">Foundation, 2010</a>) had developed animated bubble charts, aka motion charts.</p>
+<p>Rosling's presentation popularised the idea and use of interactive charts. One year later the software behind Gapminder was bought by Google and integrated as motion charts into their Google Chart Tools (<a href="">Inc., 2012</a>), formerly known as Google Visualisation API.</p>
+<p>In 2010 Sebastian Perez Saaibi (<a href="">Saaibi, 2010</a>) presented at the R/Rmetrics Workshop on Computational Finance and Financial Engineering, the idea to use Google motion charts to visualise R output with the R.rsp package (<a href="">Bengtsson, 2012</a>).</p>
+<p>Inspired by those talks and the desire to use interactive data visualisation tools to foster the dialogue between data analysts and others the authors of this vignette started the development of the <code>googleVis</code> package (<a href="">Gesmann &amp; Castillo, 2014</a>), (<a href="http://journal.r-project.org/archive/2011-2/RJournal_2011-2_Gesmann+de~Castillo.pdf">Gesmann &amp; Castillo, 2011</a>) in August 2010.</p>
+<p><img src="./figures/MotionChart.png" alt="Overview of a Google Motion Chart" /></p>
+<p><em>Overview of a Google Motion Chart. Screenshot of the output of <code>plot(gvisMotionChart(Fruits, idvar='Fruit', timevar='Year'))</code></em></p>
+<h2 id="google-chart-tools">Google Chart Tools</h2>
+<p>The Google Chart Tools (<a href="">Inc., 2012</a>) allow users to create interactive charts as part of Google documents, spreadsheets and web pages. In this text we will focus on the usage of the API as part of web pages.</p>
+<p>The Google Public Data Explorer (<a href="">Inc., 2012b</a>) provides a good example, demonstrating the use of interactive charts and how they can help to analyse data. Please note, that all of those charts are rendered by the browser.</p>
+<p>The charting data can either be embedded into the html file or read dynamically. The key to the Google Chart Tools is that the data is structured in a DataTable (<a href="">Inc., 2012c</a>), and this is where the googleVis package helps, as it transforms R data frames into JSON (<a href="">JSON.org, 2006</a>) objects, using the <code>RJSONIO</code> package (<a href="">Lang, 2012</a>), as the basis for a DataTable.</p>
+<p>As an example we shall look at the html-code of a motion chart from Google's visualisation gallery (<a href="">Inc., 2012d</a>), which generates output similar to figure below.</p>
+<pre><code> 1 &lt;html&gt;
+ 2  &lt;head&gt;
+ 3   &lt;script type=&quot;text/javascript&quot; 
+ 4     src=&quot;http://www.google.com/jsapi&quot;&gt;
+ 5   &lt;/script&gt;
+ 6   &lt;script type=&quot;text/javascript&quot;&gt;
+ 7     google.load(&#39;visualization&#39;, &#39;1&#39;, 
+ 8      {&#39;packages&#39;:[&#39;motionchart&#39;]});
+ 9    google.setOnLoadCallback(drawChart);
+10    function drawChart() {
+11    var data=new google.visualization.DataTable();
+12    data.addColumn(&#39;string&#39;, &#39;Fruit&#39;);
+13    data.addColumn(&#39;date&#39;, &#39;Date&#39;);
+14    data.addColumn(&#39;number&#39;, &#39;Sales&#39;);
+15    data.addColumn(&#39;number&#39;, &#39;Expenses&#39;);
+16    data.addColumn(&#39;string&#39;, &#39;Location&#39;);
+17    data.addRows([
+18    [&#39;Apples&#39;,new Date(1988,0,1),1000,300,&#39;East&#39;],
+19    [&#39;Oranges&#39;,new Date(1988,0,1),1150,200,&#39;West&#39;],
+20    [&#39;Bananas&#39;,new Date(1988,0,1),300,250,&#39;West&#39;],
+21    [&#39;Apples&#39;,new Date(1989,6,1),1200,400,&#39;East&#39;],
+22    [&#39;Oranges&#39;,new Date(1989,6,1),750,150,&#39;West&#39;],
+23    [&#39;Bananas&#39;,new Date(1989,6,1),788,617,&#39;West&#39;]
+24    ]);
+25    var chart=new google.visualization.MotionChart(
+26      document.getElementById(&#39;chart_div&#39;));
+27    chart.draw(data, {width: 600, height:300});
+28   }
+29   &lt;/script&gt;
+30  &lt;/head&gt;
+31  &lt;body&gt;
+32   &lt;div id=&quot;chart_div&quot; 
+33        style=&quot;width:600px; height:300px;&quot;&gt;
+34   &lt;/div&gt;
+35  &lt;/body&gt;
+36 &lt;/html&gt;</code></pre>
+<p>The code and data are processed and rendered by the browser and is not submitted to any <a href="https://google-developers.appspot.com/chart/interactive/docs/gallery/motionchart.html#Data_Policy">server</a>.</p>
+<p>You will notice that the above html code has five generic parts:</p>
+<ol style="list-style-type: decimal">
+<li>references to Google's AJAX (l. 4) and Visualisation API (ll. 7 -- 8),</li>
+<li>data to visualise as a <code>DataTable</code> (ll. 11 -- 24),</li>
+<li>an instance call to create the chart (ll. 25 -- 26),</li>
+<li>a method call to draw the chart including options, shown here as width and height (l. 27),</li>
+<li>an HTML <code>&lt;div&gt;</code> element to add the chart to the page (ll. 32 -- 34).</li>
+</ol>
+<p>These principles hold true for most of the interactive charts of the Google Chart Tools, see the examples in Figure below.</p>
+<p>However, before you use the API you should read the <a href="https://developers.google.com/terms/">Google Terms of Service</a>.</p>
+<h1 id="the-googlevis-package">The googleVis package</h1>
+<p>The googleVis package provides an interface between R and the Google Chart Tools. The functions of the package allow the user to visualise data stored in R data frames with the Google Chart Tools.</p>
+<p>Version 0.5.3 of the package provides interfaces to Motion Charts, Annotated Time Lines, Maps, Geo Maps, Geo Charts, Intensity Maps, Tables, Gauges, Tree Maps, further Line, Bar, Bubble, Column, Area, Stepped Area, Combo, Scatter, Candlestick, Pie, Sankey, Annotation, Histogram, Timeline, Calendar and Org Charts.</p>
+<p>Execute <code>demo(googleVis)</code> to see examples of the charts.</p>
+<p>The output of a googleVis function is html code that contains the data and references to JavaScript functions hosted by Google. A browser with an Internet connection is required to view the output, and for Motion Charts, Geo Maps and Annotated Time Lines also Flash.</p>
+<p><img src="./figures/googleVisDemoPlots.png" alt="Screen shot" /></p>
+<p><em>Screenshot of some of the outputs of <code>demo(googleVis)</code>. Clockwise from top left: <code>gvisMotionChart, gvisAnnotatedTimeLine, gvisGeoMap, gvisTreeMap, gvisTablez</code> and <code>gvisMap</code>.</em></p>
+<h2 id="installation">Installation</h2>
+You can install googleVis in the usual way from CRAN, e.g.:
+<div class="row"><button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button><pre style=""><code class="source r">install.packages('googleVis') </code></pre></div>
+The installation was successful if the command <code>library(googleVis)</code> gives you the following message:
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button><pre style=""><code class="source r">library(googleVis)</code></pre></div>
+<div class="row"><button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button><pre style=""><code class="output r">## 
+## Welcome to googleVis version 0.5.3
+## 
+## Please read the Google API Terms of Use
+## before you use the package:
+## https://developers.google.com/terms/
+## 
+## Note, the plot method of googleVis will by default use
+## the standard browser to display its output.
+## 
+## See the googleVis package vignettes for more details.
+## 
+## To suppress the this message use:
+## suppressPackageStartupMessages(library(googleVis))
+</code></pre></div>
+
+
+
+<h2>Using the googleVis package</h2>
+<p>The individual functions of the googleVis package are documented in the help pages. Here we will cover only the principles of the package.</p>
+<p>As an example we will show how to generate a motion chart as displayed in<br />figure below. It works similarly for the other APIs. Further examples are covered in the demos of the googleVis package.</p>
+<p>The design of the visualisation functions is fairly generic. The name of the visualisation function is <code>'gvis' + ChartType</code>. So for the Motion Chart we have:</p>
+<pre><code>gvisMotionChart(data, idvar=&#39;id&#39;, timevar=&#39;date&#39;, 
+                options=list(), chartid)</code></pre>
+<p>Here <code>data</code> is the input <code>data.frame</code> and <code>idvar</code> and <code>timevar</code> specify the column names of the id variable and time variable for the plot, while display options are set in an optional list, which we discuss in more detail on page settingoptions. The options and data requirements follow those of the Google Chart Tools and are documented in the help pages, see</p>
+<pre><code>help(&#39;gvisMotionChart&#39;)</code></pre>
+<p><img src="./figures/gvisObject.png" alt="Schematic" /></p>
+<p><em>Schematic structure of a gvis list object.</em></p>
+<p>The argument <code>chartid</code> allows the user to set a chart id of the output chart manually. If the argument is missing a random id using <code>tempfile(pattern=\textquotesingle\textquotesingle)</code> will be generated. Unique chart ids are required to place more than one chart on a web page.</p>
+<p>The output of a googleVis function is a list of lists (a nested list) containing information about the chart type, chart id and the html code in a sub-list with header, chart, caption and footer, see figure above</p>
+<p>The idea behind this concept is that users can get a complete web page, while at the same time offer a facility to extract specific parts, such as the chart itself. This is particularly helpful if the package functions are used in solutions where the user wants to feed the visualisation output into other sites, or would like to embed them into rsp-pages,<br />use <code>rApache</code> or Google Gadgets.</p>
+<p>The output of a googleVis function will be of class <code>'gvis'</code> and <code>'list'</code>. Generic print (<code>print.gvis</code>) and plot (<code>plot.gvis</code>) functions exist to ease the handling of such objects.</p>
+<p>To illustrate the concept we shall create a motion chart using the <code>Fruits</code> data set.</p>
+<h2>Motion Chart Example</h2>
+<p>Following the documentation of the Google Motion Chart API we need a data set which has at least four columns: one identifying the variable we would like to plot, one time variable and at least two numerical variables, further numerical and character columns are allowed.</p>
+<p>As an example we use the <code>Fruits</code> data set:</p>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button><pre style=""><code class="source r">data(Fruits)
+Fruits</code></pre><button class="output R toggle btn btn-xs btn-success">
+<span class="glyphicon glyphicon-chevron-down"></span> R output
+</button><pre style=""><code class="output r">##     Fruit Year Location Sales Expenses Profit       Date
+## 1  Apples 2008     West    98       78     20 2008-12-31
+## 2  Apples 2009     West   111       79     32 2009-12-31
+## 3  Apples 2010     West    89       76     13 2010-12-31
+## 4 Oranges 2008     East    96       81     15 2008-12-31
+## 5 Bananas 2008     East    85       76      9 2008-12-31
+## 6 Oranges 2009     East    93       80     13 2009-12-31
+## 7 Bananas 2009     East    94       78     16 2009-12-31
+## 8 Oranges 2010     East    98       91      7 2010-12-31
+## 9 Bananas 2010     East    81       71     10 2010-12-31
+</code></pre></div>
+
+<p>Here we will use the columns <code>Fruit</code> and <code>'Year'</code> as id and time variable respectively. However we could have used <code>'Date'</code> instead of <code>'Year'</code> as well.</p>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button><pre style=""><code class="source r"> M <- gvisMotionChart(Fruits, idvar="Fruit", timevar="Year")
+plot(M)</code></pre><!-- MotionChart generated in R 3.1.0 by googleVis 0.5.3 package -->
+<!-- Sun Jun  8 19:37:28 2014 -->
+
+
+<!-- jsHeader -->
+<script type="text/javascript">
+ 
+// jsData 
+function gvisDataMotionChartID256210e3f84 () {
+var data = new google.visualization.DataTable();
+var datajson =
+[
+ [
+ "Apples",
+2008,
+"West",
+98,
+78,
+20,
+"2008-12-31" 
+],
+[
+ "Apples",
+2009,
+"West",
+111,
+79,
+32,
+"2009-12-31" 
+],
+[
+ "Apples",
+2010,
+"West",
+89,
+76,
+13,
+"2010-12-31" 
+],
+[
+ "Oranges",
+2008,
+"East",
+96,
+81,
+15,
+"2008-12-31" 
+],
+[
+ "Bananas",
+2008,
+"East",
+85,
+76,
+9,
+"2008-12-31" 
+],
+[
+ "Oranges",
+2009,
+"East",
+93,
+80,
+13,
+"2009-12-31" 
+],
+[
+ "Bananas",
+2009,
+"East",
+94,
+78,
+16,
+"2009-12-31" 
+],
+[
+ "Oranges",
+2010,
+"East",
+98,
+91,
+7,
+"2010-12-31" 
+],
+[
+ "Bananas",
+2010,
+"East",
+81,
+71,
+10,
+"2010-12-31" 
+] 
+];
+data.addColumn('string','Fruit');
+data.addColumn('number','Year');
+data.addColumn('string','Location');
+data.addColumn('number','Sales');
+data.addColumn('number','Expenses');
+data.addColumn('number','Profit');
+data.addColumn('string','Date');
+data.addRows(datajson);
+return(data);
+}
+ 
+// jsDrawChart
+function drawChartMotionChartID256210e3f84() {
+var data = gvisDataMotionChartID256210e3f84();
+var options = {};
+options["width"] =    600;
+options["height"] =    500;
+
+
+    var chart = new google.visualization.MotionChart(
+    document.getElementById('MotionChartID256210e3f84')
+    );
+    chart.draw(data,options);
+    
+
+}
+  
+ 
+// jsDisplayChart
+(function() {
+var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+var chartid = "motionchart";
+  
+// Manually see if chartid is in pkgs (not all browsers support Array.indexOf)
+var i, newPackage = true;
+for (i = 0; newPackage && i < pkgs.length; i++) {
+if (pkgs[i] === chartid)
+newPackage = false;
+}
+if (newPackage)
+  pkgs.push(chartid);
+  
+// Add the drawChart function to the global list of callbacks
+callbacks.push(drawChartMotionChartID256210e3f84);
+})();
+function displayChartMotionChartID256210e3f84() {
+  var pkgs = window.__gvisPackages = window.__gvisPackages || [];
+  var callbacks = window.__gvisCallbacks = window.__gvisCallbacks || [];
+  window.clearTimeout(window.__gvisLoad);
+  // The timeout is set to 100 because otherwise the container div we are
+  // targeting might not be part of the document yet
+  window.__gvisLoad = setTimeout(function() {
+  var pkgCount = pkgs.length;
+  google.load("visualization", "1", { packages:pkgs, callback: function() {
+  if (pkgCount != pkgs.length) {
+  // Race condition where another setTimeout call snuck in after us; if
+  // that call added a package, we must not shift its callback
+  return;
+}
+while (callbacks.length > 0)
+callbacks.shift()();
+} });
+}, 100);
+}
+ 
+// jsFooter
+</script>
+ 
+<!-- jsChart -->  
+<script type="text/javascript" src="https://www.google.com/jsapi?callback=displayChartMotionChartID256210e3f84"></script>
+ 
+<!-- divChart -->
+  
+<div id="MotionChartID256210e3f84"
+  style="width: 600px; height: 500px;">
+</div>
+</div>
+
+<h2>World Bank Example</h2>
+<iframe src="http://mages.github.io/googleVis/WorldBank.html"
+ frameborder="0" width="700px" height="650px">
+Loading</iframe>
+<div class="row">
+<button class="source R toggle btn btn-xs btn-primary">
+<span class="glyphicon glyphicon-chevron-down"></span> R source
+</button><pre style=""><code class="source r">library(googleVis)
+library(WDI)
+inds <- c('SP.DYN.TFRT.IN','SP.DYN.LE00.IN', 'SP.POP.TOTL',
+          'NY.GDP.PCAP.CD', 'SE.ADT.1524.LT.FE.ZS')
+indnams <- c("fertility.rate", "life.expectancy", "population",
+             "GDP.per.capita.Current.USD", "15.to.25.yr.female.literacy")
+wdiData <- WDI(country="all", indicator=inds,
+               start=1960, end=format(Sys.Date(), "%Y"), extra=TRUE)
+colnum <- match(inds, names(wdiData))
+ 
+names(wdiData)[colnum] <- indnams
+## Create a motion chart
+library(googleVis)
+WorldBank <- droplevels(subset(wdiData, !region %in% "Aggregates"))
+M <- gvisMotionChart(WorldBank,
+                     idvar="country", timevar="year",
+                     xvar="life.expectancy", yvar="fertility.rate",
+                     colorvar="region", sizevar="population",
+                     options=list(width=550, height=500), chartid="WorldBank")
+## Display the chart in the browser
+plot(M)</code></pre></div>
+
+
+
+<h1>References</h1>
+<div class="row">
+<ul>
+<li>Google Inc., (2012) Google Visualisation Reference.</li>
+<li>Gapminder Foundation, (2010) Gapminder.</li>
+<li>Google Inc., (2012) Google Motion Chart API.</li>
+<li>Google Inc., (2012) Google Public Data Explorer.</li>
+<li>Markus Gesmann, Diego Castillo, (2014) googleVis: Using the Google Chart Tools with R.</li>
+<li>Google Inc., (2012) Google Chart Tools.</li>
+<li>Hans Rosling, (2006) TED Talk: Hans Rosling shows the best stats you've ever seen.</li>
+<li>JSON.org, (2006) JSON.</li>
+<li>Markus Gesmann, Diego Castillo, (2011) Using the Google Visualisation API with R. <em>The R Journal</em> <strong>3</strong> (2) 40-44 <a href="http://journal.r-project.org/archive/2011-2/RJournal_2011-2_Gesmann+de~Castillo.pdf">http://journal.r-project.org/archive/2011-2/RJournal_2011-2_Gesmann+de~Castillo.pdf</a></li>
+<li>Duncan Lang, (2012) RJSONIO: Serialize R objects to JSON, JavaScript Object Notation.</li>
+<li>Henrik Bengtsson, (2012) R.rsp: R Server Pages.</li>
+<li>Sebasti'{a}n Saaibi, (2010) R/RMETRICS Generator Tool for Google Motion Charts.</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="navbar navbar-fixed-bottom navbar-inverse"><div class="container"><div class="navbar-header"><button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-responsive-collapse">
+<span class="icon-bar"></span> <span class="icon-bar"></span> <span class="icon-bar"></span>
+</button></div>
+<div id="bottom-navbar" class="navbar-collapse collapse navbar-responsive-collapse"><ul class="nav navbar-nav navbar-right"><li class="nav"><p class="navbar-text">
+Toggle
+</p></li>
+<li class="dropup">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">Code <b class="caret"></b></a>
+<ul class="dropdown-menu"><li class="dropdown-header">
+Languages
+</li>
+<li >
+<a href="#" class="toggle-global source R" type="source.R">R</a>
+</li>
+<li >
+<a href="#" type="all-source" class="toggle-global">All</a>
+</li></ul></li>
+<li class="dropup">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">Output <b class="caret"></b></a>
+<ul class="dropdown-menu"><li class="dropdown-header">
+Type
+</li>
+<li >
+<a href="#" class="toggle-global output" type="output">output</a>
+</li>
+<li >
+<a href="#" type="all-output" class="toggle-global">All</a>
+</li></ul></li>
+<li class="active">
+<a href="#" type="figure" class="toggle-global">Figures</a>
+</li></ul>
+<ul class="nav navbar-nav navbar-left"><li class="dropup">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">Bootstrap theme <b class="caret"></b></a>
+<ul class="dropdown-menu"><li class="active">
+<a class="theme-switch" title="Default" href="#">Default</a>
+</li>
+<li >
+<a class="theme-switch" title="Amelia" href="#">Amelia</a>
+</li>
+<li >
+<a class="theme-switch" title="Cerulean" href="#">Cerulean</a>
+</li>
+<li >
+<a class="theme-switch" title="Cosmo" href="#">Cosmo</a>
+</li>
+<li >
+<a class="theme-switch" title="Cyborg" href="#">Cyborg</a>
+</li>
+<li >
+<a class="theme-switch" title="Journal" href="#">Journal</a>
+</li>
+<li >
+<a class="theme-switch" title="Flatly" href="#">Flatly</a>
+</li>
+<li >
+<a class="theme-switch" title="Readable" href="#">Readable</a>
+</li>
+<li >
+<a class="theme-switch" title="Simplex" href="#">Simplex</a>
+</li>
+<li >
+<a class="theme-switch" title="Slate" href="#">Slate</a>
+</li>
+<li >
+<a class="theme-switch" title="Spacelab" href="#">Spacelab</a>
+</li>
+<li >
+<a class="theme-switch" title="United" href="#">United</a>
+</li></ul></li></ul>
+<ul class="nav navbar-nav navbar-left"><li class="dropup">
+<a href="#" class="dropdown-toggle" data-toggle="dropdown">Code highlighting <b class="caret"></b></a>
+<ul class="dropdown-menu"><li class="active">
+<a class="highlight-switch" title="HighlightJs" href="#">HighlightJs</a>
+</li>
+<li >
+<a class="highlight-switch" title="Dark" href="#">Dark</a>
+</li>
+<li >
+<a class="highlight-switch" title="Far" href="#">Far</a>
+</li>
+<li >
+<a class="highlight-switch" title="Idea" href="#">Idea</a>
+</li>
+<li >
+<a class="highlight-switch" title="Sunburst" href="#">Sunburst</a>
+</li>
+<li >
+<a class="highlight-switch" title="Zenburn" href="#">Zenburn</a>
+</li>
+<li >
+<a class="highlight-switch" title="Visual Studio" href="#">Visual Studio</a>
+</li>
+<li >
+<a class="highlight-switch" title="Ascetic" href="#">Ascetic</a>
+</li>
+<li >
+<a class="highlight-switch" title="Magula" href="#">Magula</a>
+</li>
+<li >
+<a class="highlight-switch" title="Github" href="#">Github</a>
+</li>
+<li >
+<a class="highlight-switch" title="Google Code" href="#">Google Code</a>
+</li>
+<li >
+<a class="highlight-switch" title="Brown Paper" href="#">Brown Paper</a>
+</li>
+<li >
+<a class="highlight-switch" title="School Book" href="#">School Book</a>
+</li>
+<li >
+<a class="highlight-switch" title="IR Black" href="#">IR Black</a>
+</li>
+<li >
+<a class="highlight-switch" title="Solarized - Dark" href="#">Solarized - Dark</a>
+</li>
+<li >
+<a class="highlight-switch" title="Solarized - Light" href="#">Solarized - Light</a>
+</li>
+<li >
+<a class="highlight-switch" title="Arta" href="#">Arta</a>
+</li>
+<li >
+<a class="highlight-switch" title="Monokai" href="#">Monokai</a>
+</li>
+<li >
+<a class="highlight-switch" title="Xcode" href="#">Xcode</a>
+</li>
+<li >
+<a class="highlight-switch" title="Pojoaque" href="#">Pojoaque</a>
+</li>
+<li >
+<a class="highlight-switch" title="Rainbow" href="#">Rainbow</a>
+</li>
+<li >
+<a class="highlight-switch" title="Tomorrow" href="#">Tomorrow</a>
+</li>
+<li >
+<a class="highlight-switch" title="Tomorrow Night" href="#">Tomorrow Night</a>
+</li>
+<li >
+<a class="highlight-switch" title="Tomorrow Night Bright" href="#">Tomorrow Night Bright</a>
+</li>
+<li >
+<a class="highlight-switch" title="Tomorrow Night Blue" href="#">Tomorrow Night Blue</a>
+</li>
+<li >
+<a class="highlight-switch" title="Tomorrow Night Eighties" href="#">Tomorrow Night Eighties</a>
+</li></ul></li></ul></div></div></div>
+<link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" title="Default" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/amelia/bootstrap.min.css" title="Amelia" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/cerulean/bootstrap.min.css" title="Cerulean" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/cosmo/bootstrap.min.css" title="Cosmo" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/cyborg/bootstrap.min.css" title="Cyborg" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/journal/bootstrap.min.css" title="Journal" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/flatly/bootstrap.min.css" title="Flatly" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/readable/bootstrap.min.css" title="Readable" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/simplex/bootstrap.min.css" title="Simplex" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/slate/bootstrap.min.css" title="Slate" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/spacelab/bootstrap.min.css" title="Spacelab" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://netdna.bootstrapcdn.com/bootswatch/3.0.0/united/bootstrap.min.css" title="United" media="screen"></link><link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/default.min.css" title="HighlightJs" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/dark.min.css" title="Dark" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/far.min.css" title="Far" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/idea.min.css" title="Idea" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/sunburst.min.css" title="Sunburst" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/zenburn.min.css" title="Zenburn" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/vs.min.css" title="Visual Studio" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/ascetic.min.css" title="Ascetic" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/magula.min.css" title="Magula" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/github.min.css" title="Github" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/googlecode.min.css" title="Google Code" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/brown_paper.min.css" title="Brown Paper" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/school_book.min.css" title="School Book" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/ir_black.min.css" title="IR Black" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/solarized_dark.min.css" title="Solarized - Dark" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/solarized_light.min.css" title="Solarized - Light" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/arta.min.css" title="Arta" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/monokai.min.css" title="Monokai" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/xcode.min.css" title="Xcode" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/pojoaque.min.css" title="Pojoaque" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/rainbow.min.css" title="Rainbow" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow.min.css" title="Tomorrow" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow-night.min.css" title="Tomorrow Night" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow-night-bright.min.css" title="Tomorrow Night Bright" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow-night-blue.min.css" title="Tomorrow Night Blue" media="screen"></link> <link rel="alternate stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/tomorrow-night-eighties.min.css" title="Tomorrow Night Eighties" media="screen"></link>
+</div>
+<div id="push">
+
+</div>
+<div id="footer"><div class="container"><p class="text-muted" id="credit">
+Styled with <a href="https://github.com/jimhester/knitrBootstrap">knitrBootstrap</a>
+</p></div></div>
+<link rel="stylesheet" id="theme" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" media="screen"></link><link rel="stylesheet" id="highlight" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/7.3/styles/default.min.css" media="screen"></link>
+</div>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html> <head>
+<title>Example of JavaScript in HTML</title>
+<link rel="stylesheet" href="eg.css"/>
+<script type="text/javascript" src="Eg.js"></script>
+</head>
+
+<body>
+<h1>Illustraing JavaScript Code in HTML</h1>
+<div class="note">
+<p>
+We create a simple HTML document that displays
+two images.
+The viewer can change the image on the left using a pull-down menu.
+She can hide and display the image on the right by toggling the checkbox.
+</p>
+<p>
+We create the HTML with a text editor.
+We'll display the two images in a table, but we could use CSS with float: left and float: right.
+The user-interface elements are within a form element, but this is not essential as we use
+JavaScript event handlers on each element.
+  The two form elements are SELECT and an INPUT.
+  We specify JavaScript a command(s) for the onchange attribute on each of these.
+  The select element has several OPTION elements giving the items in the pull down menu.
+  The value attribute of each OPTION gives the URL for the image, either a regular URL or a local
+  file name. We use these as the value for the corresponding IMG element's src attribute.
+</p>
+<p>
+The JavaScript code is stored in a separate file named <a href="Eg.js" >Eg.js </a>
+</p>
+<p>
+  The CSS file for this HTML document is in <a href="eg.css" >eg.css</a>.
+</p>  
+</div>
+
+<hr width="50%"/>
+
+<p id="announce">
+</p>
+
+<table >
+<tr><td><img id=img1 src="http://newsimg.bbc.co.uk/media/images/47868000/jpg/_47868651_001547179-1.jpg"/></td>
+    <td><a href="http://en.wikipedia.org/wiki/Glaucus_atlanticus" target="_blank"><img id=img2  src="0_a1e99_9dabddb2_L.jpg "/></a></td></tr>
+</table>
+
+<form>
+Change left image:
+<select name="image" onchange="changeImage(this)">
+  <option value="http://newsimg.bbc.co.uk/media/images/47868000/jpg/_47868651_001547179-1.jpg">Hummingbird Moth</option>
+  <option value="260px-Okapi2.jpg">Okapi</option>    
+  <option value="440px-Lowland_Streaked_Tenrec,_Mantadia,_Madagascar.jpg">Tenrec</option>
+</select>
+<br />
+Hide right image <input type="checkbox" name="hide" onchange="toggleRightImage(this);"> 
+</form>
+
+
+<hr>
+See <a href="http://www.boredpanda.com/unusual-animals/" >http://www.boredpanda.com/unusual-animals/</a>
+
+<hr>
+<address><a href="http://www.stat.ucdavis.edu/~duncan">Duncan Temple Lang</a>
+<a href=mailto:duncan@r-project.org>&lt;duncan@r-project.org&gt;</a></address>
+<!-- hhmts start --> Last modified: Fri Apr 24 16:01:38 PDT 2015 <!-- hhmts end -->
+</body> </html>
