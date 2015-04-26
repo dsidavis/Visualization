@@ -1,0 +1,35 @@
+What do we want to have for the viewer to explore?
+Without worrying excessively about design, we'll create a
+reasonably rich page/dashboard for the viewer to explore
+the SF Bay housing price data.
+
+UI
+
+ plot of the map of the bay area with counties.
+ Color code by price or number of houses sold.
+   Ideally get the boundaries for the cities and use those rather than counties.
+   Allow the viewer to change what we color by - median price or number of houses sold.
+
+ Display density plots for price by city
+
+ Display number of houses by week by county or city
+   Allow the viewer to change the start and end dates.
+
+ Plot of price by sqft for the included points.  
+    Tooltips
+
+ Click on a point in a plot and see the corresponding entry from Zillow.
+
+ Two scatter plots - click/mouse over point in one, see the points in the other.
+
+ Checkboxes to add/remove counties/cities from the plots  
+
+
+
+
+
+
+server
+  load the data
+
+
